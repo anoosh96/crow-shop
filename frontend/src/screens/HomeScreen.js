@@ -1,22 +1,24 @@
 import React,{useState,useEffect} from 'react'
+import {useDispatch,useSelector} from 'react-redux'
 import {Row,Col} from 'react-bootstrap'
 // import products from '../products'
 import Product from '../components/Product'
-import axios from 'axios'
+//import axios from 'axios'
+import {fetchProducts,listProductsV1} from '../actions/productActions'
+
 
 function HomeScreen() {
 
-    const [products,setProducts] = useState([]);
-
+    const dispatch = useDispatch();
+    const productList = useSelector((state)=>state.productList);
+    const {loading,error,products} = productList;
+    
     useEffect(()=>{
-        axios.get('/api/products')
-        .then((res)=>{
-            console.log(res);
-            setProducts(res.data);
-        })
-
+        console.log('action');
+        dispatch(fetchProducts());
     },[])
 
+    
     return (
         <div>
             <h1>Latest Products</h1>
