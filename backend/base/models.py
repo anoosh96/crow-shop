@@ -17,7 +17,9 @@ class Product(models.Model):
     createdAt = models.DateTimeField(auto_now_add=True)
     _id = models.AutoField(primary_key=True,editable=False)
 
-
+    @property
+    def numReviews(self):
+        return self.review_set.count()
 
     def __str__(self):
         return self.name
