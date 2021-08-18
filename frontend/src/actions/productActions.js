@@ -6,7 +6,7 @@ export const fetchProducts = () => async (dispatch) => {
     dispatch({type:productConstants.PRODUCT_LIST_REQUEST});
 
     try {
-        const {data} = await axios.get('/ap/products');
+        const {data} = await axios.get('/api/products');
         dispatch({
             type: productConstants.PRODUCT_LIST_SUCCESS,
             payload: data
