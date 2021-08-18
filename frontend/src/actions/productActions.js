@@ -6,16 +6,19 @@ export const fetchProducts = () => async (dispatch) => {
     dispatch({type:productConstants.PRODUCT_LIST_REQUEST});
 
     try {
-        const {data} = await axios.get('/api/products');
+        const {data} = await axios.get('/ap/products');
         dispatch({
             type: productConstants.PRODUCT_LIST_SUCCESS,
             payload: data
         })    
     } 
     catch (error) {
+        console.log(error.response);
         dispatch({
             type: productConstants.PRODUCT_LIST_FAIL,
-            payload: error.message
+            payload: error.response && error.response.data.message?
+                     error.response.data.message 
+                     : error.message
         })
     }
  }

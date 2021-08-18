@@ -1,10 +1,10 @@
-import React,{useState,useEffect} from 'react'
+import React,{useEffect} from 'react'
 import {useDispatch,useSelector} from 'react-redux'
 import {Row,Col} from 'react-bootstrap'
 // import products from '../products'
 import Product from '../components/Product'
 //import axios from 'axios'
-import {fetchProducts,listProductsV1} from '../actions/productActions'
+import {fetchProducts} from '../actions/productActions'
 
 
 function HomeScreen() {
@@ -14,7 +14,6 @@ function HomeScreen() {
     const {loading,error,products} = productList;
     
     useEffect(()=>{
-        console.log('action');
         dispatch(fetchProducts());
     },[])
 
@@ -22,13 +21,17 @@ function HomeScreen() {
     return (
         <div>
             <h1>Latest Products</h1>
-            <Row>
-                {products.map((product)=>(
-                    <Col key={product._id} md={6} lg={4} >
-                       <Product product={product} />
-                    </Col>
-                ))}
-            </Row>
+            {loading ? <h2>Loading...</h2>
+               : error ? <h3>{error}</h3> 
+                 :
+                    <Row>
+                        {products.map((product)=>(
+                            <Col key={product._id} md={6} lg={4} >
+                            <Product product={product} />
+                            </Col>
+                        ))}
+                    </Row>
+            }
         </div>
     )
 }
