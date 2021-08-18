@@ -8,10 +8,11 @@ import Alert from '../components/Message'
 
 
 
-function ProductScreen({match}) {
+function ProductScreen({match,history}) {
     const [product,setProducts] = useState([]);
     const [loading,setLoading] = useState(false);
     const [error,setError] = useState(null);
+    const [qty,setQty] = useState(0);
 
     useEffect(()=>{
 
@@ -33,6 +34,23 @@ function ProductScreen({match}) {
         })
 
     },[])
+
+    const incrementQty = (e) => {
+        if(qty+1 <= product.countInStock){
+            setQty((prevQty)=>prevQty+1);
+        }
+    }
+
+    const decrementQty = (e) =>{
+        if(qty-1 >= 0){
+            setQty((prevQty)=>prevQty-1);
+        }
+    }
+
+    const addToCartHandler = (e)=>{
+       history.push(`/cart/${match.params.id}?qty=${qty}`)
+    }
+
     return (
         <div>
             <Link className="btn btn-dark my-3" to="/">Go Back</Link>
@@ -63,8 +81,25 @@ function ProductScreen({match}) {
                                     <ListGroup.Item className="p-4">
                                         Description: {product.description}
                                     </ListGroup.Item>
-                                    <ListGroup.Item className="p-4">
-                                        <Button className="btn-block w-100" disabled={product.countInStock==0} type="button">Add to Cart</Button>
+                                    <ListGroup.Item >
+                                        <Row>
+                                            <Col xs={4} className="qty-sel d-flex align-items-center border">
+                                               
+                                                   <span className="fa fa-plus px-2 btn" onClick={incrementQty}></span>
+                                                   <span className="qty px-2 flex-grow col text-center">{qty}</span>
+                                                   <span className="fa fa-minus px-2 btn" onClick={decrementQty}></span>
+                                               
+                                            </Col>
+                                            <Col>
+                                               <Button 
+                                                 className="btn-block w-100" 
+                                                 disabled={product.countInStock==0}
+                                                 type="button" 
+                                                 onClick={addToCartHandler}
+                                                 >Add to Cart</Button>
+                                            </Col>
+                                        
+                                        </Row>
                                     </ListGroup.Item>
 
                                 </ListGroup>
