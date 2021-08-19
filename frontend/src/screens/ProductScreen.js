@@ -6,7 +6,7 @@ import axios from 'axios'
 import Loader from '../components/Loader'
 import Alert from '../components/Message'
 
-
+import CartItemQuantity from '../components/CartItemQuantity'
 
 function ProductScreen({match,history}) {
     const [product,setProducts] = useState([]);
@@ -33,19 +33,8 @@ function ProductScreen({match,history}) {
             setLoading(false);
         })
 
-    },[])
+    },[match])
 
-    const incrementQty = (e) => {
-        if(qty+1 <= product.countInStock){
-            setQty((prevQty)=>prevQty+1);
-        }
-    }
-
-    const decrementQty = (e) =>{
-        if(qty-1 >= 0){
-            setQty((prevQty)=>prevQty-1);
-        }
-    }
 
     const addToCartHandler = (e)=>{
        history.push(`/cart/${match.params.id}?qty=${qty}`)
@@ -83,17 +72,13 @@ function ProductScreen({match,history}) {
                                     </ListGroup.Item>
                                     <ListGroup.Item >
                                         <Row>
-                                            <Col xs={4} className="qty-sel d-flex align-items-center border">
-                                               
-                                                   <span className="fa fa-plus px-2 btn" onClick={incrementQty}></span>
-                                                   <span className="qty px-2 flex-grow col text-center">{qty}</span>
-                                                   <span className="fa fa-minus px-2 btn" onClick={decrementQty}></span>
-                                               
+                                            <Col xs={4}>
+                                                   <CartItemQuantity qtyy={qty} handleChange={(quantity)=>{setQty(quantity)}} inStock={product.countInStock}/>
                                             </Col>
                                             <Col>
                                                <Button 
                                                  className="btn-block w-100" 
-                                                 disabled={product.countInStock==0}
+                                                 disabled={product.countInStock===0}
                                                  type="button" 
                                                  onClick={addToCartHandler}
                                                  >Add to Cart</Button>

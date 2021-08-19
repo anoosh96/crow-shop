@@ -12,7 +12,7 @@ const cartReducer = (state = { cartItems:[] }, action) => {
                return {
                    ...state,
                    cartItems: state.cartItems.map(x => 
-                       x.product === existItem? item : x 
+                       x.product === existItem.product? item : x 
                    )
                }
            }
@@ -23,7 +23,11 @@ const cartReducer = (state = { cartItems:[] }, action) => {
                }
            }
 
-       //case cartConstants.CART_REMOVE_ITEM:
+       case cartConstants.CART_REMOVE_ITEM:
+           return {
+               ...state,
+               cartItems: state.cartItems.filter((item)=>item.product!==action.payload)
+           }
 
 
        default:
