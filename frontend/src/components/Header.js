@@ -40,7 +40,7 @@ function Header() {
                             </LinkContainer> 
 
                             <LinkContainer to="/cart">    
-                                <Nav.Link >Cart</Nav.Link>
+                                <Nav.Link ><span className="fa fa-shopping-cart px-2"></span>Cart</Nav.Link>
                             </LinkContainer>
 
 
@@ -57,7 +57,7 @@ function Header() {
                               </NavDropdown>
                               :
                             <LinkContainer to="/login">
-                                <Nav.Link >Login</Nav.Link>
+                                <Nav.Link ><span className="fa fa-user px-2"></span> Login</Nav.Link>
                             </LinkContainer>
                              }
                             

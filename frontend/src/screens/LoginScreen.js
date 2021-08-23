@@ -64,7 +64,7 @@ function LoginScreen({location,history}) {
 
                 <Row className="mt-2">
                     <Col>
-                        New Customer ? <Link to="">Register Now</Link>
+                        New Customer ? <Link to="/register">Register Now</Link>
                     </Col>
                 </Row>
             </Form>

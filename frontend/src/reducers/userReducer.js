@@ -1,6 +1,6 @@
 import {userConstants} from '../constants/userConstants'
 
-const userLoginReducer = (state = {}, action)=>{
+export const userLoginReducer = (state = {}, action)=>{
     switch (action.type){
         case userConstants.USER_LOGIN_SUCCESS:
             return {
@@ -28,4 +28,31 @@ const userLoginReducer = (state = {}, action)=>{
      
 }
 
-export default userLoginReducer
+export const userRegisterReducer = (state = {}, action)=>{
+    switch (action.type){
+        case userConstants.USER_REGISTER_SUCCESS:
+            return {
+                loading: false, userInfo: action.payload
+            }
+
+        case userConstants.USER_REGISTER_REQUEST:
+            return {
+                loading: true
+            }
+
+        case userConstants.USER_REGISTER_FAIL:
+            return {
+                loading: false, error: action.payload
+            }
+        
+        case userConstants.USER_LOGOUT:
+            return {
+                
+            }
+
+        default:
+            return state
+    }
+     
+}
+
