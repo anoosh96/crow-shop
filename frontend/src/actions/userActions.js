@@ -8,7 +8,7 @@ export const loginUser = (email,password) => async (dispatch) => {
 
     try {
         const {data} = await axios.post(
-            '/api/users/login',
+            '/api/users/login/',
              {'username':email,'password':password},
              {
                  headers: {
@@ -32,4 +32,9 @@ export const loginUser = (email,password) => async (dispatch) => {
                      : error.message
         })
     }
+ }
+
+ export const logoutUser = () => (dispatch) => {
+     localStorage.removeItem('userInfo'); 
+     dispatch({type:userConstants.USER_LOGOUT})
  }

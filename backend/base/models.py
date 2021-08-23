@@ -7,6 +7,8 @@ class ProductManager(models.Manager):
     def withRating(self):
         return self.get_queryset().annotate(rating=models.Avg('reviews__rating'),numReviews=models.Count('reviews'))
 
+    def productWithRating(self,id):
+        return self.withRating().get(_id=id)
 
 
 class Product(models.Model):
