@@ -16,8 +16,8 @@ export const fetchProducts = () => async (dispatch) => {
         console.log(error.response);
         dispatch({
             type: productConstants.PRODUCT_LIST_FAIL,
-            payload: error.response && error.response.data.message?
-                     error.response.data.message 
+            payload: error.response && error.response.data.detail?
+                     error.response.data.detail 
                      : error.message
         })
     }

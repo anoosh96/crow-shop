@@ -84,6 +84,7 @@ class ProductReviewSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     #review_set = ProductReviewSerializer(many=True)
     numReviews = serializers.ReadOnlyField()
+    rating = serializers.ReadOnlyField()
     class Meta:
         model = Product
         fields = '__all__'

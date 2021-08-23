@@ -5,6 +5,7 @@ import {Container} from 'react-bootstrap'
 import Home from './screens/HomeScreen'
 import ProductScreen from './screens/ProductScreen'
 import CartScreen from './screens/CartScreen'
+import LoginScreen from './screens/LoginScreen'
 
 import {BrowserRouter as Router,Route} from 'react-router-dom' 
 
@@ -18,6 +19,7 @@ function App() {
               <Route path="/" component={Home} exact />
               <Route path="/product/:id" component={ProductScreen} exact />
               <Route path = "/cart/:id?" component={CartScreen} />
+              <Route path = "/login" component={LoginScreen} />
           </Container>
         </main>
         <Footer/>

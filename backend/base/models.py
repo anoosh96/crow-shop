@@ -3,6 +3,12 @@ from django.contrib.auth.models import User
 from django.db.models.fields import NullBooleanField
 # Create your models here.
 
+class ProductManager(models.Manager):
+    def withRating(self):
+        return self.get_queryset().annotate(rating=models.Avg('reviews__rating'),numReviews=models.Count('reviews'))
+
+
+
 class Product(models.Model):
     user = models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
     name = models.CharField(max_length=200,null=True,blank=True)
@@ -11,15 +17,11 @@ class Product(models.Model):
     category = models.CharField(max_length=200,null=True,blank=True)
     price = models.DecimalField(max_digits=7,decimal_places=2,null=True,blank=True)
     countInStock = models.IntegerField(null=True,blank=True,default=0)
-    #rating = models.DecimalField(max_digits=7,decimal_places=2,null=True,blank=True)
-    #numReviews = models.IntegerField(null=True,blank=True,default=0)
     description = models.TextField(null=True,blank=True)
     createdAt = models.DateTimeField(auto_now_add=True)
     _id = models.AutoField(primary_key=True,editable=False)
 
-    @property
-    def numReviews(self):
-        return self.review_set.count()
+    objects = ProductManager()
 
     def __str__(self):
         return self.name
@@ -27,7 +29,7 @@ class Product(models.Model):
 
 class Review(models.Model):
     user = models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
-    product = models.ForeignKey(Product,on_delete=models.CASCADE)
+    product = models.ForeignKey(Product,related_name="reviews",on_delete=models.CASCADE)
     rating = models.DecimalField(max_digits=7,decimal_places=2,null=True,blank=True,default=0)
     comment = models.TextField(null=True,blank=True)
     _id = models.AutoField(primary_key=True,editable=False)

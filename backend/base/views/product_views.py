@@ -10,7 +10,7 @@ from ..serializers import ProductSerializer
 
 @api_view(['Get'])
 def getProducts(request):
-    products = Product.objects.all()
+    products = Product.objects.withRating()
     serializer = ProductSerializer(products,many=True) 
     return Response(serializer.data)
 
