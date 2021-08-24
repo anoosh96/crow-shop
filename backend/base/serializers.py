@@ -28,7 +28,9 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['_id','username','email','name','isAdmin','password','password2','first_name']
         read_only_fields = ['name','_id','isAdmin']
-        write_only_fields = ['first_name']
+        extra_kwargs = {
+            'first_name': {'write_only': True},
+        }
 
     def get_name(self,obj):
         name = obj.first_name
@@ -55,9 +57,23 @@ class UserSerializer(serializers.ModelSerializer):
 
         return user
 
+    def update(self,instance,validated_data):
+        
+        instance.first_name = validated_data['first_name']
+        instance.username = validated_data['username']
+        instance.email = validated_data['username']
+
+        if('password' in validated_data):
+            instance.set_password(validated_data['password'])
+
+        instance.save()
+
+        return instance
+
     def validate(self, attrs):
-        if attrs['password'] != attrs['password2']:
-            raise serializers.ValidationError({"password": "Password fields didn't match."})
+        if('password' in attrs):
+            if attrs['password'] != attrs['password2']:
+                raise serializers.ValidationError({"password": "Password fields didn't match."})
 
         return attrs
 
@@ -70,8 +86,14 @@ class UserSerializerWithToken(UserSerializer):
 
     def get_token(self,obj):
         token = RefreshToken.for_user(obj)
-        return str(token)
+        return str(token.access_token)
 
+
+class UserUpdateSerializer(UserSerializer):
+    password = serializers.CharField(write_only=True,required=False,validators=[password_validation.validate_password])
+    password2 = serializers.CharField(write_only=True,required=False,validators=[password_validation.validate_password])
+    class Meta(UserSerializer.Meta):
+        None
 
 
 
