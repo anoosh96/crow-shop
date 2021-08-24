@@ -75,6 +75,7 @@ export const registerUser = (name,email,password,confirmPassword) => async (disp
  export const logoutUser = () => (dispatch) => {
      localStorage.removeItem('userInfo'); 
      dispatch({type:userConstants.USER_LOGOUT})
+     dispatch({type:userConstants.USER_DETAILS_RESET})
  }
 
 
