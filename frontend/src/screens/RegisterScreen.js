@@ -58,7 +58,8 @@ function RegisterScreen({location,history}) {
                     </Form.Label>
                     <Form.Control 
                         required
-                        type="email" 
+                        type="email"
+                        value={email} 
                         placeholder="Enter Your Email"
                         onChange={(e)=>setEmail(e.target.value)}
                     >
@@ -71,6 +72,7 @@ function RegisterScreen({location,history}) {
                     <Form.Control 
                         required
                         type="text" 
+                        value={name}
                         placeholder="Enter Your Name"
                         onChange={(e)=>setName(e.target.value)}
                     >
@@ -83,6 +85,7 @@ function RegisterScreen({location,history}) {
                     <Form.Control 
                         required
                         type="password" 
+                        value={password}
                         placeholder="Enter Your Password"
                         onChange={(e)=>setPassowrd(e.target.value)}
                         className={message!==''?'border border-danger':''}
@@ -96,7 +99,8 @@ function RegisterScreen({location,history}) {
                     <Form.Control 
                         required
                         type="password" 
-                        placeholder="Enter Your Password"
+                        placeholder="Confirm Password"
+                        value={confirmPassword}
                         onChange={(e)=>setConfirmPassowrd(e.target.value)}
                         className={message!==''?'border border-danger':''}
                     >
