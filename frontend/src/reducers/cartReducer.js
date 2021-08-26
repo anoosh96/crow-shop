@@ -1,6 +1,6 @@
 import { cartConstants } from "../constants/cartConstants"
 
-const cartReducer = (state = { cartItems:[],shippingAddress:{} }, action) => {
+const cartReducer = (state = { cartItems:[],shippingAddress:{},paymentMethod:'' }, action) => {
     
     switch (action.type){
        case cartConstants.CART_ADD_ITEM:
@@ -33,6 +33,12 @@ const cartReducer = (state = { cartItems:[],shippingAddress:{} }, action) => {
         return {
             ...state,
             shippingAddress: action.payload
+        }
+
+        case cartConstants.CART_SAVE_PAYMENT_METHOD:
+        return {
+            ...state,
+            paymentMethod: action.payload
         }
 
 
