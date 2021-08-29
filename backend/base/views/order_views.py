@@ -15,7 +15,8 @@ from ..serializers import OrderItemSerializer, OrderSerializer, ShippingSerializ
 
 class OrderItemsListCreate(APIView):
 
-
+    permission_classes = [IsAuthenticated]
+    
     def post(self,request):
 
         #user = request.user

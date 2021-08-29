@@ -13,8 +13,8 @@ import { userConstants } from '../constants/userConstants'
 function ProfileScreen({location,history}) {
 
     const [email,setEmail] = useState('')
-    const [password,setPassowrd] = useState('')
-    const [confirmPassword,setConfirmPassowrd] = useState('')
+    const [password,setPassword] = useState('')
+    const [confirmPassword,setConfirmPassword] = useState('')
     const [name,setName] = useState('')
     const [message,setMessage] = useState('')
 
@@ -68,7 +68,7 @@ function ProfileScreen({location,history}) {
             history.push('/login')
         }
         else{
-            if(!user || success){
+            if(!user || !user.name || success){
                 dispatch({type:userConstants.USER_UPDATE_RESET})
                 dispatch(getUserDetails('profile'))
             }
@@ -124,7 +124,7 @@ function ProfileScreen({location,history}) {
                                 type="password" 
                                 value={password}
                                 placeholder="Enter Your Password"
-                                onChange={(e)=>setPassowrd(e.target.value)}
+                                onChange={(e)=>setPassword(e.target.value)}
                                 className={message!==''?'border border-danger':''}
                             >
                             </Form.Control>
@@ -137,7 +137,7 @@ function ProfileScreen({location,history}) {
                                 type="password" 
                                 placeholder="Confirm Password"
                                 value={confirmPassword}
-                                onChange={(e)=>setConfirmPassowrd(e.target.value)}
+                                onChange={(e)=>setConfirmPassword(e.target.value)}
                                 className={message!==''?'border border-danger':''}
                             >
                             </Form.Control>

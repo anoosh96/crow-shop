@@ -41,6 +41,12 @@ const cartReducer = (state = { cartItems:[],shippingAddress:{},paymentMethod:'' 
             paymentMethod: action.payload
         }
 
+        case cartConstants.CART_EMPTY_ITEMS:
+        return {
+            ...state,
+            cartItems: []
+        }
+
 
        default:
            return state

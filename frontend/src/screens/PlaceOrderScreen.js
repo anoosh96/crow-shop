@@ -1,28 +1,56 @@
-import React from 'react'
-import { Col, ListGroup, Row, Image, Card, Button } from 'react-bootstrap'
-import { useSelector } from 'react-redux'
+import React,{useEffect, useState} from 'react'
+import { Col, ListGroup, Row, Image, Card, Button, Spinner } from 'react-bootstrap'
+import { useSelector,useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { createOrder } from '../actions/OrderActions'
 import CheckoutSteps from '../components/CheckoutSteps'
 
 import Alert from '../components/Message'
+import { orderConstants } from '../constants/orderConstants'
 
-function PlaceOrderScreen() {
+function PlaceOrderScreen({history}) {
 
     const cart = useSelector(state=>state.cart)
+
+    let {success,order,error,loading} = useSelector(state=>state.orderCreate)
+
+    const dispatch = useDispatch()
 
     cart.itemsPrice = cart.cartItems.reduce((acc,item)=>acc+(item.qty*item.price),0).toFixed(2)
 
     cart.shippingPrice = cart.itemsPrice > 100 ? 0 : 100
 
-    cart.taxPrice = 0
+    cart.taxPrice = Number(0.082*cart.itemsPrice).toFixed(2)
 
-    cart.totalPrice = Number(cart.itemsPrice+cart.shippingPrice+cart.taxPrice).toFixed(2)
+    cart.totalPrice = (Number(cart.itemsPrice) + Number(cart.shippingPrice) + Number(cart.taxPrice)).toFixed(2)
 
 
     const placeOrderHandler = (e) => {
         //
         console.log('placing order');
+
+        dispatch(
+            createOrder(
+                {
+                    orderItems: cart.cartItems,
+                    paymentMethod: cart.paymentMethod,
+                    shippingPrice: cart.shippingPrice,
+                    taxPrice: cart.shippingPrice,
+                    totalPrice: cart.totalPrice,
+                    shippingAddress: cart.shippingAddress
+                }
+            )
+        )
+        
     }
+
+    useEffect(() => {
+        if(success){
+            dispatch({type:orderConstants.ORDER_CREATE_RESET})
+            history.push(`/order/${order._id}`)
+        }
+        
+    },[success,history,order])
 
     return (
         <div>
@@ -136,11 +164,26 @@ function PlaceOrderScreen() {
                                     onClick={placeOrderHandler}
                                     className="w-100"
                                 >
-                                   Place Order
+                                   { 
+                                     loading?
+                                       ( <Spinner
+                                            as="span"
+                                            animation="border"
+                                            size="sm"
+                                            role="status"
+                                            aria-hidden="true"
+                                        />
+                                        
+                                       )
+                                       :
+                                       ('Place Order') 
+                                   }
+                                   
                                 </Button>
                             </ListGroup.Item>
                         </ListGroup>
                     </Card>
+                    {error && <Alert variant="danger">{error}</Alert>}
                 </Col>
             </Row>
         </div>
