@@ -49,6 +49,40 @@ export const orderDetailReducer = (state = {order: { shippingaddress:{}, orderit
             }
 
         case orderConstants.ORDER_DETAIL_RESET:
+            return {
+                order:{
+                    shippingaddress:{},
+                    orderitem_set:{}
+                }
+            }
+
+        default:
+            return state
+    }
+     
+}
+
+
+export const orderChargeReducer = (state = {} , action)=>{
+    switch (action.type){
+        case orderConstants.ORDER_CHARGE_REQUEST:
+            return {
+                loading: true
+            }
+
+        case orderConstants.ORDER_CHARGE_FAIL:
+            return {
+                loading: false,
+                error: action.payload
+            }
+
+        case orderConstants.ORDER_CHARGE_SUCCESS:
+            return {
+                loading: false ,
+                success: true
+            }
+
+        case orderConstants.ORDER_CHARGE_RESET:
             return {}
 
         default:

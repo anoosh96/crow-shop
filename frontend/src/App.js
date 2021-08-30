@@ -17,6 +17,7 @@ import PlaceOrderScreen from './screens/PlaceOrderScreen'
 import {BrowserRouter as Router,Route} from 'react-router-dom' 
 import PrivateRoute from './components/PrivateComponent'
 import OrderScreen from './screens/OrderScreen'
+import CheckoutScreen from './screens/Checkout'
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
               <Route path = "/payment" component={PaymentScreen} />
               <PrivateRoute path = "/place-order" component={PlaceOrderScreen} />
               <PrivateRoute path = "/order/:id" component={OrderScreen} />
+              <PrivateRoute path = "/checkout" component={CheckoutScreen} />
           </Container>
         </main>
         <Footer/>

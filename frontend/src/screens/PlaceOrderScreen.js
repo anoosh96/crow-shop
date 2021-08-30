@@ -35,7 +35,7 @@ function PlaceOrderScreen({history}) {
                     orderItems: cart.cartItems,
                     paymentMethod: cart.paymentMethod,
                     shippingPrice: cart.shippingPrice,
-                    taxPrice: cart.shippingPrice,
+                    taxPrice: cart.taxPrice,
                     totalPrice: cart.totalPrice,
                     shippingAddress: cart.shippingAddress
                 }

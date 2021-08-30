@@ -9,7 +9,11 @@ function OrderScreen({match}) {
 
     const orderId = match.params.id;
 
-    const {order,error} = useSelector(state=>state.orderDetails)
+    const {order,error,loading} = useSelector(state=>state.orderDetails)
+
+    if(!loading && !error)
+       order.itemsPrice = order.orderitem_set.reduce((acc,item)=>acc+(item.qty*item.item.price),0).toFixed(2)
+
     const dispatch = useDispatch()
     useEffect(() => {
         if(!order._id || Number(orderId)!==order._id){
@@ -97,7 +101,7 @@ function OrderScreen({match}) {
                                         Item:
                                     </Col>
                                     <Col>
-                                        {/* ${order.itemsPrice} */}
+                                        ${order.itemsPrice}
                                     </Col>
                                 </Row>
                             </ListGroup.Item>
@@ -131,7 +135,11 @@ function OrderScreen({match}) {
                                     </Col>
                                 </Row>
                             </ListGroup.Item>
-                            
+                            {!order.isPaid &&
+                                <ListGroup.Item>
+                                    <Link to="/checkout" className="btn w-100 btn-dark">Continue With Payment</Link>
+                                </ListGroup.Item>
+                            }
                         </ListGroup>
                     </Card>
                     {error && <Alert variant="danger">{error}</Alert>}

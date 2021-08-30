@@ -1,13 +1,19 @@
 from datetime import datetime
+from functools import partial
 from django.contrib.auth.models import User
+from django.http import request
 from rest_framework import serializers, status
 from rest_framework.decorators import api_view,permission_classes
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import RetrieveAPIView, UpdateAPIView
+from stripe.api_resources import source
 from ..models import Order,OrderItem, Product,ShippingAddress
 from ..serializers import OrderItemSerializer, OrderSerializer, ShippingSerializer
+import stripe
+
+stripe.api_key = 'sk_test_51JUB2PGQ1KpthHMidxD5RMqmIgTbiOXyBWGgh5HEXLZL0PW6I0lQzG3wOLth46up6TMPSJSYicAtOnkszdsPPczF00dzjObQeM'
 # Create your views here.
 
 
@@ -16,7 +22,7 @@ from ..serializers import OrderItemSerializer, OrderSerializer, ShippingSerializ
 class OrderItemsListCreate(APIView):
 
     permission_classes = [IsAuthenticated]
-    
+
     def post(self,request):
 
         #user = request.user
@@ -95,32 +101,36 @@ class OrderItemsRetreive(RetrieveAPIView):
 
 
 
-class UpdateOrderPayment(UpdateAPIView):
 
-    serializer_class = OrderSerializer
-    lookup_field = '_id'
-    lookup_url_kwarg= 'pk'
+class ChargeOrder(APIView):
+   
+    # permission_classes=[IsAuthenticated]
+
+    def post(self,req,*args,**kwargs):
+
+        if(not req.data['token']):
+            return Response({'detail':'no token provided'},status=status.HTTP_400_BAD_REQUEST)
+        customer = stripe.Customer.create(
+            email= req.user['email'],
+            name= req.user['first_name'],
+            source=str(req.data['token'])
+        )
+
+        stripe.Charge.create(
+            customer=customer,
+            amount=(int(req.data["amount"])*100),
+            currency='usd',
+            description='purchase'
+        )
+
+        serializer = OrderSerializer(Order.objects.get(_id=kwargs['pk']),data={'isPaid':True,'paidAt':datetime.now()},partial=True)
+
+        if(serializer.is_valid()):
+            serializer.save()
+
+        return Response({'detail':'Payment Successfull'},status=status.HTTP_200_OK)
 
 
-    def get_queryset(self):
-        return Order.objects.all()
-    
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
-        instance = self.get_object()
-        request.data["isPaid"] = True
-        request.data["paidAt"] = datetime.now()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-
-        if getattr(instance, '_prefetched_objects_cache', None):
-            # If 'prefetch_related' has been applied to a queryset, we need to
-            # forcibly invalidate the prefetch cache on the instance.
-            instance._prefetched_objects_cache = {}
-
-
-        return Response({'detail':'order payment updated'})
         
 
 

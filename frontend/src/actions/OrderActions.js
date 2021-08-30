@@ -86,3 +86,43 @@ export const getOrder = (id) => async (dispatch,getState) => {
         })
     }
 }
+
+
+
+export const chargeOrder = (id,token,amount) => async (dispatch,getState) => {
+
+    dispatch({'type': orderConstants.ORDER_CHARGE_REQUEST})
+    
+    const {userInfo} = getState().userLogin
+
+
+    try {
+
+        const {data} = await axios.post(
+            `/api/orders/${id}/charge/`,
+            {id,token,amount},
+            {
+                headers:{
+                    'Content-type':'application/json',
+                    'Authorization': `Bearer ${userInfo.token} `
+
+                }
+            }
+        )
+
+        dispatch({
+            'type': orderConstants.ORDER_CHARGE_SUCCESS,
+            'payload': data
+        })
+
+    }
+
+    catch(error){
+        dispatch({
+            type: orderConstants.ORDER_CHARGE_FAIL,
+            payload: error.response && error.response.data.detail?
+                     error.response.data.detail 
+                     : error.message
+        })
+    }
+}
