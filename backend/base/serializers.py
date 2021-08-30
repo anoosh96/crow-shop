@@ -114,6 +114,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 class OrderItemSerializer(serializers.ModelSerializer):
 
+    item = ProductSerializer(source="product",read_only=True)
     class Meta:
         model = OrderItem
         fields = '__all__'
@@ -131,7 +132,7 @@ class OrderSerializer(serializers.ModelSerializer):
     orderitem_set = OrderItemSerializer(many=True,read_only=True)
     customer = UserSerializer(many=False,read_only=True,source='user')
     shippingaddress = ShippingSerializer(many=False,read_only=True)
-    
+
     class Meta:
         model = Order
         fields = '__all__'

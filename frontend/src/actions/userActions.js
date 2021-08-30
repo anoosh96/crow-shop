@@ -1,6 +1,6 @@
 import {userConstants} from '../constants/userConstants'
 
-import axios from 'axios'
+import axios from '../axios'
 
 export const loginUser = (email,password) => async (dispatch) => {
 

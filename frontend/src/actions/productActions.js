@@ -1,5 +1,5 @@
 import {productConstants} from '../constants/productsConstants'
-import axios from 'axios'
+import axios from '../axios'
 
 export const fetchProducts = () => async (dispatch) => {
 
