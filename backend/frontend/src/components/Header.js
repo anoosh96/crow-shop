@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useSelector,useDispatch } from 'react-redux'
-import {Navbar,Nav,Container,NavDropdown} from 'react-bootstrap'
+import {Navbar,Nav,Container,NavDropdown,Image} from 'react-bootstrap'
 import {LinkContainer} from 'react-router-bootstrap'
 import {logoutUser} from '../actions/userActions'
 import { useHistory } from 'react-router-dom'
@@ -23,7 +23,7 @@ function Header() {
                 <Container>
                     
                     <LinkContainer to="/">
-                      <Navbar.Brand>Crow Shop</Navbar.Brand>
+                      <Navbar.Brand><Image src="/static/images/logo-crow.png" alt="logo" fluid style={{'width':'50px'}}/> {' '} <strong>Crow Shop</strong></Navbar.Brand>
                     </LinkContainer>
 
 

@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.http import request
 from rest_framework import serializers, status
 from rest_framework.decorators import api_view,permission_classes
-from rest_framework.permissions import IsAuthenticated,IsAdminUser
+from rest_framework.permissions import IsAuthenticated,IsAdminUser,BasePermission
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView
@@ -17,6 +17,13 @@ stripe.api_key = 'sk_test_51JUB2PGQ1KpthHMidxD5RMqmIgTbiOXyBWGgh5HEXLZL0PW6I0lQz
 # Create your views here.
 
 
+
+class OrderViewPermission(BasePermission):
+
+    def has_object_permission(self, request, view, obj):
+        if(request.user == obj.user):
+            return True
+        return False
 
 
 class OrderItemsListCreate(APIView):
@@ -96,6 +103,8 @@ class OrderItemsRetreive(RetrieveAPIView):
     serializer_class = OrderDetailSerializer
     lookup_field = '_id'
     lookup_url_kwarg= 'pk'
+    permission_classes=[IsAuthenticated & OrderViewPermission]
+
     def get_queryset(self):
         return Order.objects.all()
 
@@ -104,7 +113,7 @@ class OrderItemsRetreive(RetrieveAPIView):
 
 class ChargeOrder(APIView):
    
-    # permission_classes=[IsAuthenticated]
+    permission_classes=[IsAuthenticated]
 
     def post(self,req,*args,**kwargs):
 
