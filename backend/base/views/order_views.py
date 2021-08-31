@@ -7,10 +7,10 @@ from rest_framework.decorators import api_view,permission_classes
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.generics import RetrieveAPIView, UpdateAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView
 from stripe.api_resources import source
 from ..models import Order,OrderItem, Product,ShippingAddress
-from ..serializers import OrderItemSerializer, OrderSerializer, ShippingSerializer
+from ..serializers import OrderDetailSerializer, OrderItemSerializer, OrderSerializer, ShippingSerializer
 import stripe
 
 stripe.api_key = 'sk_test_51JUB2PGQ1KpthHMidxD5RMqmIgTbiOXyBWGgh5HEXLZL0PW6I0lQzG3wOLth46up6TMPSJSYicAtOnkszdsPPczF00dzjObQeM'
@@ -39,7 +39,7 @@ class OrderItemsListCreate(APIView):
 
         else:
             order = Order(
-                user=User.objects.first(),
+                user=request.user,
                 paymentMethod=data['paymentMethod'],
                 taxPrice=data['taxPrice'],
                 shippingPrice=data['shippingPrice'],
@@ -93,7 +93,7 @@ class OrderItemsListCreate(APIView):
 
 class OrderItemsRetreive(RetrieveAPIView):
 
-    serializer_class = OrderSerializer
+    serializer_class = OrderDetailSerializer
     lookup_field = '_id'
     lookup_url_kwarg= 'pk'
     def get_queryset(self):
@@ -111,8 +111,8 @@ class ChargeOrder(APIView):
         if(not req.data['token']):
             return Response({'detail':'no token provided'},status=status.HTTP_400_BAD_REQUEST)
         customer = stripe.Customer.create(
-            email= req.user['email'],
-            name= req.user['first_name'],
+            email= req.user.email,
+            name= req.user.first_name,
             source=str(req.data['token'])
         )
 
@@ -129,11 +129,6 @@ class ChargeOrder(APIView):
             serializer.save()
 
         return Response({'detail':'Payment Successfull'},status=status.HTTP_200_OK)
-
-
-        
-
-
 
 
 

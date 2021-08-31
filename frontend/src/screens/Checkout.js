@@ -29,6 +29,7 @@ const CheckoutScreen = ({history}) => {
     if(success && order){
         const orderId = order._id
         dispatch({'type':orderConstants.ORDER_DETAIL_RESET})
+        dispatch({'type':orderConstants.ORDER_CHARGE_RESET})
         history.push(`/order/${orderId}`)
     }
   },[success,order])

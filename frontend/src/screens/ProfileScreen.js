@@ -2,12 +2,13 @@ import React,{useState,useEffect} from 'react'
 import {useDispatch,useSelector} from 'react-redux'
 
 import {Link} from 'react-router-dom'
-import {Row,Col,Form,Button, FormGroup,Container} from 'react-bootstrap'
+import {Row,Col,Form,Button, FormGroup,Container, Table} from 'react-bootstrap'
 import Loader from '../components/Loader'
 import Alert from '../components/Message'
 import FormContainer from '../components/FormContainer'
 
 import {getUserDetails,updateUserProfile} from '../actions/userActions'
+import { getMyOrders } from '../actions/OrderActions'
 import { userConstants } from '../constants/userConstants'
 
 function ProfileScreen({location,history}) {
@@ -32,6 +33,8 @@ function ProfileScreen({location,history}) {
 
     const userUpdated = useSelector(state=>state.userUpdate)
     const {success} = userUpdated
+
+    const {myOrders,error:orderError,loading:orderLoading} = useSelector(state=>state.ordersMy)
 
 
     const submitHandler = (e) => {
@@ -71,6 +74,7 @@ function ProfileScreen({location,history}) {
             if(!user || !user.name || success){
                 dispatch({type:userConstants.USER_UPDATE_RESET})
                 dispatch(getUserDetails('profile'))
+                dispatch(getMyOrders(userInfo.id))
             }
             else{
                 setName(user.name)
@@ -84,7 +88,7 @@ function ProfileScreen({location,history}) {
     return (
         <Container>
             <Row>
-                <Col md={3}>
+                <Col md={4} className="px-2">
                     <h2>User Profile</h2>
                     {message && <Alert variant="danger"><span className="fa fa-exclamation-triangle d-inline-block mx-2"></span>{message}</Alert>}
                     {error && <Alert variant="danger"><span className="fa fa-exclamation-triangle d-inline-block mx-2"></span>{error}</Alert>}
@@ -145,8 +149,41 @@ function ProfileScreen({location,history}) {
                         <Button type="submit" variant="primary" className="mt-4">Update Profile</Button>
                     </Form>
                 </Col>
-                <Col md={9}>
+                <Col md={8} className="px-5">
                     <h2>My Orders</h2>
+                    {orderLoading && <Loader/>}
+                    {orderError && <Alert variant="danger">{orderError}</Alert>}
+                    {myOrders.length===0? <Alert variant="info">You have no orders yet</Alert>
+                     :
+                    <Table striped responsive className='table-sm'>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Date</th>
+                                <th>Total</th>
+                                <th>Paid</th>
+                                <th>Delivered</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                myOrders.map((order,index)=>(
+                                    
+                                     <tr>
+                                         <td><Link to={`/order/${order._id}`}>{order._id}</Link></td>
+                                         <td>{order.createdAt.substring(0,10)}</td>
+                                         <td>${order.totalPrice}</td>
+                                         <td>{order.isPaid? order.paidAt.substring(0,10) : <i className="fas fa-times color-red"></i>}</td>
+                                         <td>{order.isDelivered? order.deliveredAt.substring(0,10) : <i className="fas fa-times color-red"></i>}</td>
+
+                                    </tr>
+                                   )
+                                )
+                            }
+                        </tbody>
+                    </Table>
+                    }
                 </Col>
             </Row>
         </Container>

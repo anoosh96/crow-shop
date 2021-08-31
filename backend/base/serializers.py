@@ -12,7 +12,8 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         serializer = UserSerializerWithToken(self.user).data 
 
         for k,v in serializer.items():
-            data[k] = v
+            if(k not in data):
+                data[k] = v
         
         return data 
 
@@ -79,14 +80,18 @@ class UserSerializer(serializers.ModelSerializer):
 
 class UserSerializerWithToken(UserSerializer):
     token = serializers.SerializerMethodField(read_only=True)
-
+    refresh = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = User
-        fields = ['id','username','email','name','isAdmin','token']
+        fields = ['id','username','email','name','isAdmin','token','refresh']
 
     def get_token(self,obj):
         token = RefreshToken.for_user(obj)
         return str(token.access_token)
+
+    def get_refresh(self,obj):
+        refresh_token = RefreshToken.for_user(obj)
+        return str(refresh_token)
 
 
 class UserUpdateSerializer(UserSerializer):
@@ -127,11 +132,18 @@ class ShippingSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class OrderSerializer(serializers.ModelSerializer):
+class OrderDetailSerializer(serializers.ModelSerializer):
 
     orderitem_set = OrderItemSerializer(many=True,read_only=True)
     customer = UserSerializer(many=False,read_only=True,source='user')
     shippingaddress = ShippingSerializer(many=False,read_only=True)
+
+    class Meta:
+        model = Order
+        fields = '__all__'
+
+
+class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order

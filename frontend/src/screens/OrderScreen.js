@@ -11,7 +11,7 @@ function OrderScreen({match}) {
 
     const {order,error,loading} = useSelector(state=>state.orderDetails)
 
-    if(!loading && !error)
+    if(order && order._id)
        order.itemsPrice = order.orderitem_set.reduce((acc,item)=>acc+(item.qty*item.item.price),0).toFixed(2)
 
     const dispatch = useDispatch()
@@ -37,6 +37,14 @@ function OrderScreen({match}) {
                                 {'  '}
                                 {order.shippingaddress.country}
                             </p>
+                            {
+                                order.isDelivered?
+                                (<Alert variant="success" className="my-2">Order Delivered at {order.deliveredAt}</Alert>)
+
+                                :
+
+                                (<Alert variant="warning" className="my-2">Order Delivery: Pending</Alert>)
+                            }
                         </ListGroup.Item>
                         <ListGroup.Item>
                             <h2>Payment Method</h2>
@@ -47,7 +55,7 @@ function OrderScreen({match}) {
 
                                 :
 
-                                (<Alert variant="warning" className="my-2">Order Not Paid!</Alert>)
+                                (<Alert variant="warning" className="my-2">Order Payment: Pending</Alert>)
                             }
                         </ListGroup.Item>
 
@@ -135,10 +143,18 @@ function OrderScreen({match}) {
                                     </Col>
                                 </Row>
                             </ListGroup.Item>
-                            {!order.isPaid &&
-                                <ListGroup.Item>
-                                    <Link to="/checkout" className="btn w-100 btn-dark">Continue With Payment</Link>
-                                </ListGroup.Item>
+                            {!order.isPaid ?
+                                (   
+                                    <ListGroup.Item>
+                                        <Link to="/checkout" className="btn w-100 btn-dark">Continue With Payment</Link>
+                                    </ListGroup.Item>
+                                )
+                                :
+                                (
+                                    <ListGroup.Item>
+                                        <Link to="" className="btn w-100 btn-dark">Continue Shopping</Link>
+                                    </ListGroup.Item>
+                                )
                             }
                         </ListGroup>
                     </Card>

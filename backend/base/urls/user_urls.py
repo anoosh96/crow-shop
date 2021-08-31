@@ -13,8 +13,8 @@ urlpatterns = [
     path('profile/',views.getUserProfile,name="userProfile"),
     path('',views.getUsers,name="userList"),
     path('register/',views.registerUser, name="registerUser"),
-    path('profile/update',views.updateUser, name="user-profile-update")
-
+    path('profile/update',views.updateUser, name="user-profile-update"),
+    path('<int:pk>/orders/',views.MyOrders.as_view(),name="user-orders")
 
 
 ]

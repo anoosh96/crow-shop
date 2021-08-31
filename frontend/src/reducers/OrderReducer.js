@@ -52,7 +52,7 @@ export const orderDetailReducer = (state = {order: { shippingaddress:{}, orderit
             return {
                 order:{
                     shippingaddress:{},
-                    orderitem_set:{}
+                    orderitem_set:[]
                 }
             }
 
@@ -84,6 +84,40 @@ export const orderChargeReducer = (state = {} , action)=>{
 
         case orderConstants.ORDER_CHARGE_RESET:
             return {}
+
+        default:
+            return state
+    }
+     
+}
+
+
+export const myOrderListReducer = (state = {myOrders:[]} , action)=>{
+    switch (action.type){
+        case orderConstants.MY_ORDER_LIST_REQUEST:
+            return {
+                ...state,
+                loading: true
+            }
+
+        case orderConstants.MY_ORDER_LIST_FAIL:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            }
+
+        case orderConstants.MY_ORDER_LIST_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                myOrders: action.payload
+            }
+
+        case orderConstants.MY_ORDER_LIST_RESET:
+            return {
+                myOrders: []
+            }
 
         default:
             return state
